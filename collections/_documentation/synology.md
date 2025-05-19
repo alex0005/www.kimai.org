@@ -23,6 +23,8 @@ This HowTo explains the installation of Kimai on a Synology NAS with **DSM 7+** 
   - Create a new Project 
     - Next steps are not documented, if you try it, please share what you did, so we can adapt the docs!
     - Use Dockerfile from below ...
+    - please adjust the image of the sqldb depending on your synology modell, some devices use Intel CPU's others use ARM CPU's
+    - please look at: https://kb.synology.com/en-global/DSM/tutorial/What_kind_of_CPU_does_my_NAS_have to find out what CPU your device has
 
 ### Docker-Composer YAML
 
@@ -32,6 +34,9 @@ services:
 
   sqldb:
     image: mysql:5.7
+    # for ARM 64 e.g. DS 220j,DS 223,CPU'S:
+    #     image: mysql
+    #     platform: linux/arm64
     volumes:
       - mysql:/var/lib/mysql
     environment:
@@ -58,6 +63,7 @@ services:
     environment:
       - ADMINMAIL=admin@kimai.local
       - ADMINPASS=changemeplease
+      # adjust the serverVersion depending on your sqldb image
       - "DATABASE_URL=mysql://kimaiuser:kimaipassword@sqldb/kimai?charset=utf8mb4&serverVersion=5.7.40"
     restart: unless-stopped
 
@@ -66,6 +72,7 @@ volumes:
   mysql:
   plugins: 
 ```
+It is not necessary to configure the webstation service of the synology explicitly. 
 
 ## Updating the image
 
